@@ -28,17 +28,11 @@ export const createTRPCContext = (opts: CreateNextContextOptions) => {
 	const { req } = opts;
 	const sesh = getAuth(req);
 
-  if (!sesh.userId) {
-    throw new TRPCError({
-      code: "UNAUTHORIZED",
-      message: "UNAUTHORIZED",
-    });
-  }
-	const userId = sesh.userId ;
+	const userId = sesh.userId;
 
 	return {
 		prisma,
-		userId ,
+		userId,
 	};
 };
 
@@ -91,8 +85,8 @@ export const createTRPCRouter = t.router;
  */
 export const publicProcedure = t.procedure;
 
-const enforeUserIsAuthenticated = async ({ ctx, next }) => {
-	if (!ctx.userId ) {
+const enforeUserIsAuthenticated = t.middleware(async ({ ctx, next }) => {
+	if (!ctx.userId) {
 		throw new TRPCError({
 			code: "UNAUTHORIZED",
 			message: "You must be logged in to do this",
@@ -100,9 +94,9 @@ const enforeUserIsAuthenticated = async ({ ctx, next }) => {
 	}
 	return next({
 		ctx: {
-			userId : ctx.userId ,
+			userId: ctx.userId,
 		},
 	});
-};
+});
 
 export const privateProcedure = t.procedure.use(enforeUserIsAuthenticated);

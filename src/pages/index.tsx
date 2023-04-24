@@ -13,7 +13,7 @@ dayjs.extend(relativeTime);
 
 const CreatePostWizard = () => {
 	const { user } = useUser();
-	console.log(user);
+
 	if (!user) return null;
 
 	return (
@@ -37,6 +37,8 @@ type PostWithUser = RouterOutputs["posts"]["getAll"][number];
 const PostView = (props: PostWithUser) => {
 	const { post, author } = props;
 
+	if (!author.username) return <div>No data available</div>;
+	
 	return (
 		<div key={post.id} className="flex p-4 border-b border-slate-400 gap-4">
 			<Image
@@ -53,7 +55,7 @@ const PostView = (props: PostWithUser) => {
 						post.createdAt,
 					).fromNow()}`}</span>
 				</div>
-				<span>{post.content}</span>
+				<span className="text-2xl">{post.content}</span>
 			</div>
 		</div>
 	);

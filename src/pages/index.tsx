@@ -8,11 +8,16 @@ import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import Image from "next/image";
 import { LoadingPage } from "~/components/loading";
+import { useState } from "react";
 
 dayjs.extend(relativeTime);
 
 const CreatePostWizard = () => {
 	const { user } = useUser();
+
+	const {mutate} = api.posts.create.useMutation()
+
+	const [input, setInput] = useState("")
 
 	if (!user) return null;
 
@@ -28,7 +33,11 @@ const CreatePostWizard = () => {
 			<input
 				placeholder="What's on your mind? Emoji Edition"
 				className="bg-transparent grow outline-none"
+				type="text"
+				value={input}
+				onChange={(e) => setInput(e.target.value)}
 			/>
+			<button onClick={() => mutate({content: input})}>Post</button>
 		</div>
 	);
 };
@@ -70,7 +79,7 @@ const Feed = () => {
 
 	return (
 		<div className="flex flex-col">
-			{[...data, ...data]?.map((fullPost) => (
+			{data.map((fullPost) => (
 				<PostView {...fullPost} key={fullPost.post.id} />
 			))}
 		</div>

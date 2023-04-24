@@ -28,6 +28,12 @@ export const createTRPCContext = (opts: CreateNextContextOptions) => {
 	const { req } = opts;
 	const sesh = getAuth(req);
 
+  if (!sesh.userId) {
+    throw new TRPCError({
+      code: "UNAUTHORIZED",
+      message: "UNAUTHORIZED",
+    });
+  }
 	const userId = sesh.userId ;
 
 	return {
